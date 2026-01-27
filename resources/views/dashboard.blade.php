@@ -1,7 +1,18 @@
-<div class="flex min-h-screen bg-gray-100">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List Signup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="flex min-h-screen bg-gray-100">
   <!-- Sidebar -->
   <aside class="w-64 bg-white shadow-md">
     <div class="p-6 font-bold text-purple-700 text-2xl">AdminPanel</div>
+    <div class="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold">SR</div>
     <nav class="mt-8">
       <a href="#" class="block py-3 px-6 text-gray-700 hover:bg-purple-100">Dashboard</a>
       <a href="#" class="block py-3 px-6 text-gray-700 hover:bg-purple-100">Users</a>
@@ -17,7 +28,13 @@
       <h1 class="text-xl font-bold text-purple-700">Dashboard</h1>
       <div class="flex items-center gap-4">
         <input type="text" placeholder="Search..." class="px-4 py-2 border rounded-lg">
-        <div class="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold">SR</div>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="flex items-center bg-red-200 p-2 rounded-md text-gray-700 hover:text-red-600 transition">
+                <i class="fas fa-sign-out-alt mr-2"></i>
+                <span>Déconnecter</span>
+            </button>
+        </form>
       </div>
     </header>
 
@@ -89,3 +106,6 @@
 <footer class="bg-white p-4 mt-10 text-center text-sm text-gray-400 border-t">
   © 2025 AdminPanel. All rights reserved.
 </footer>
+
+</body>
+</html>

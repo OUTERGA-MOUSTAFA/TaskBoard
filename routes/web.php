@@ -16,19 +16,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{AuthController,TaskController};
 Route::get('/', function () {
     return view('index');
-});
+})->name('')->middleware('guest');
 
 Route::get('/login', function () {
     return view('Auth.login');
-});
+})->name('login')->middleware('guest');
 
 Route::get('/register', function () {
     return view('Auth.inscription');
-});
+})->name('register')->middleware('guest');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-});
+Route::get('/dashboard',[TaskController::class, 'index'])->name('dashboard')->middleware('auth');
 
 Route::post('/save', [AuthController::class, 'register']);
 Route::post('/log', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');

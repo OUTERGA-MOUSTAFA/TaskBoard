@@ -72,4 +72,19 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
+
+    public function logout(Request $request)
+{
+    // clean user info Guard (Deconnecter)
+    Auth::logout();
+
+    //unset session and destroy
+    $request->session()->invalidate();
+
+    // for new session security
+    $request->session()->regenerateToken();
+
+    return redirect('/login')->with('success', 'Vous êtes déconnecté.');
+}
+
 }
