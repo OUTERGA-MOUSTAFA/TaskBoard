@@ -12,12 +12,15 @@
   <!-- Sidebar -->
   <aside class="w-64 bg-white shadow-md">
     <div class="p-6 font-bold text-purple-700 text-2xl">AdminPanel</div>
-    <div class="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold">SR</div>
+    <header class="mt-8 flex center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-md flex items-center gap-6">
+            <img src="https://i.pravatar.cc/100" alt="Profile" class="w-20 h-20 rounded-full shadow">
+        <div>
+    </header>
     <nav class="mt-8">
-      <a href="#" class="block py-3 px-6 text-gray-700 hover:bg-purple-100">Dashboard</a>
-      <a href="#" class="block py-3 px-6 text-gray-700 hover:bg-purple-100">Users</a>
-      <a href="#" class="block py-3 px-6 text-gray-700 hover:bg-purple-100">Analytics</a>
-      <a href="#" class="block py-3 px-6 text-gray-700 hover:bg-purple-100">Settings</a>
+      <a href="#" class="block py-3 px-6 text-gray-700 hover:bg-purple-100">ToDo</a>
+      <a href="#" class="block py-3 px-6 text-gray-700 hover:bg-purple-100">In progress</a>
+      <a href="#" class="block py-3 px-6 text-gray-700 hover:bg-purple-100">Done</a>
     </nav>
   </aside>
 
@@ -40,66 +43,61 @@
 
     <!-- Content -->
     <main class="p-6 space-y-6">
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-  <div class="bg-white p-6 rounded-lg shadow-md">
-    <p class="text-sm text-gray-500">Total Users</p>
-    <h2 class="text-3xl font-bold text-purple-700 mt-2">1,240</h2>
-  </div>
-  <div class="bg-white p-6 rounded-lg shadow-md">
-    <p class="text-sm text-gray-500">Revenue</p>
-    <h2 class="text-3xl font-bold text-green-600 mt-2">$24,500</h2>
-  </div>
-  <div class="bg-white p-6 rounded-lg shadow-md">
-    <p class="text-sm text-gray-500">New Orders</p>
-    <h2 class="text-3xl font-bold text-blue-600 mt-2">320</h2>
-  </div>
-  <div class="bg-white p-6 rounded-lg shadow-md">
-    <p class="text-sm text-gray-500">Pending Tickets</p>
-    <h2 class="text-3xl font-bold text-red-500 mt-2">12</h2>
-  </div>
-</div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <p class="text-sm text-gray-500">todo</p>
+            <h2 class="text-3xl font-bold text-purple-700 mt-2">12</h2>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <p class="text-sm text-gray-500">in progress</p>
+            <h2 class="text-3xl font-bold text-green-600 mt-2">2</h2>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <p class="text-sm text-gray-500">done</p>
+            <h2 class="text-3xl font-bold text-blue-600 mt-2">10</h2>
+        </div>
+        
+        </div>
 
-<div class="bg-white rounded-lg shadow-md">
-  <div class="p-4 border-b font-bold text-purple-700">User List</div>
-  <table class="w-full text-left">
-    <thead class="bg-purple-50">
-      <tr>
-        <th class="p-4">Name</th>
-        <th class="p-4">Email</th>
-        <th class="p-4">Role</th>
-        <th class="p-4">Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="border-t">
-        <td class="p-4">John Doe</td>
-        <td class="p-4">john@example.com</td>
-        <td class="p-4">Admin</td>
-        <td class="p-4 text-green-600 font-bold">Active</td>
-      </tr>
-      <tr class="border-t">
-        <td class="p-4">Jane Smith</td>
-        <td class="p-4">jane@example.com</td>
-        <td class="p-4">Editor</td>
-        <td class="p-4 text-yellow-500 font-bold">Pending</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+        <div class="bg-white rounded-lg shadow-md">
+        <div class="p-4 border-b font-bold text-purple-700">Tasks List</div>
+            <table class="w-full text-left">
+                <thead class="bg-purple-50">
+                <tr>
+                    <th class="p-4">Titre</th>
+                    <th class="p-4">Description</th>
+                    <th class="p-4">deadline</th>
+                    <th class="p-4">priorite</th>
+                    <th class="p-4">statut</th>
+                </tr>
+                </thead>
+                <tbody>
+                
+                    @foreach ($tasks as $task)
+                    <tr class="border-t">
+                        <td class="p-4 font-semibold text-gray-700">{{ $task->titre }}</td>
+                        <td class="p-4 text-gray-600">{{ $task->description }}</td>
+                        <td class="p-4 text-sm text-purple-600">{{ $task->deadline }}</td>
+                        <td class="p-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold 
+                                {{ $task->priorite == 'high' ? 'bg-red-100 text-red-600' : ($task->priorite == 'medium' ? 'bg-yellow-100 text-yellow-600' : 'bg-green-100 text-green-600') }}">
+                                {{ strtoupper($task->priorite) }}
+                            </span>
+                        </td>
+                        <td class="p-4 italic text-gray-500">{{ $task->statut }}</td>
+                    </tr>
+                @endforeach
+                
+                </tbody>
+            </table>
+            <div class="mt-4 p-4">
+                {{ $tasks->links() }}
+            </div>
+        </div>
 
-<div class="bg-white p-6 rounded-lg shadow-md grid grid-cols-2 md:grid-cols-4 gap-4">
-  <button class="bg-purple-600 text-white py-3 rounded-lg shadow hover:bg-purple-700">Add User</button>
-  <button class="bg-blue-600 text-white py-3 rounded-lg shadow hover:bg-blue-700">Export Data</button>
-  <button class="bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700">Generate Report</button>
-  <button class="bg-red-600 text-white py-3 rounded-lg shadow hover:bg-red-700">Delete Records</button>
-</div>
-
-<div class="bg-white p-6 rounded-lg shadow-md flex items-center gap-6">
-  <img src="https://i.pravatar.cc/100" alt="Profile" class="w-20 h-20 rounded-full shadow">
-  <div>
-    <h3 class="text-xl font-bold text-purple-700">Sophia Ray</h3>
-    <p class="text-gray-500">Administrator</p>
-    <button class="mt-2 bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700">Edit Profile</button>
+    <div class="bg-white p-6 rounded-lg shadow-md grid grid-cols-2 md:grid-cols-4 gap-4">
+    <button class="bg-purple-600 text-white py-3 rounded-lg shadow hover:bg-purple-700">Add Task</button>
+    </div>    
   </div>
 </div>
 
