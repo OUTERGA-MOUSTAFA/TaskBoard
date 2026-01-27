@@ -26,6 +26,9 @@ Route::get('/register', function () {
     return view('Auth.inscription');
 });
 
-Route::get('/dashboard', [TaskController::class, 'index'])->middleware('auth');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+});
+
 Route::post('/save', [AuthController::class, 'register']);
 Route::post('/log', [AuthController::class, 'login']);

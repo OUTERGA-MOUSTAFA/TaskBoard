@@ -27,12 +27,11 @@
                     </div>
                 @endif
 
-                @if($errors->any())
-                    <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm border-l-4 border-red-500">
-                        Informations incorrectes.
+                @error('login_error')
+                    <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm border-l-4 border-red-500 italic">
+                        <i class="fas fa-exclamation-circle mr-2"></i> {{ $message }}
                     </div>
-                @endif
-
+                @enderror
                 <form action="/log" method="POST" class="space-y-6">
                     @csrf
                     
@@ -40,7 +39,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                         <div class="relative">
                             <input type="email" name="email" value="{{ old('email') }}" 
-                                class="w-full px-4 py-3 rounded-lg border @error('email') border-red-500 @else border-gray-300 @enderror focus:ring-2 focus:ring-red-600 focus:outline-none transition-all"
+                                class="w-full px-4 py-3 rounded-lg border border-red-500 border-gray-300 focus:ring-2 focus:ring-red-600 focus:outline-none transition-all @error('email') border-red-500 @enderror"
                                 placeholder="you@example.com">
                             <i class="fas fa-envelope absolute right-3 top-4 text-gray-400"></i>
                         </div>
@@ -51,7 +50,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                         <div class="relative">
                             <input type="password" name="password" 
-                                class="w-full px-4 py-3 rounded-lg border @error('password') border-red-500 @else border-gray-300 @enderror focus:ring-2 focus:ring-red-600 focus:outline-none transition-all"
+                                class="w-full px-4 py-3 rounded-lg border border-red-500 border-gray-300 focus:ring-2 focus:ring-red-600 focus:outline-none transition-all @error('password') border-red-500 @enderror"
                                 placeholder="••••••••">
                             <i class="fas fa-lock absolute right-3 top-4 text-gray-400"></i>
                         </div>

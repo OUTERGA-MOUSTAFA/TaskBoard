@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str; 
+
+// use Illuminate\Support\Facades\Hash; kandirha f model User 
 use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
@@ -13,7 +17,7 @@ class AuthController extends Controller
         // Validation
         $request->validate([
             'Nom'      => 'required|string|max:255',
-            'Prenom'      => 'required|string|max:255',
+            'Prenom'   => 'required|string|max:255',
             'Email'    => 'required|string|email|max:255|unique:users', // check email not repated
             'Password' => 'required|string|min:8|confirmed', // repate password check
         ]);
@@ -32,26 +36,39 @@ class AuthController extends Controller
         return redirect('/login')->with('success', 'Bienvenue ! Compte créé avec succès');
     }
 
+    
 
     public function login(Request $request)
     {
+        // 1. تحديد "مفتاح" لكل مستخدم (غالباً الإيميل مع الـ IP)
+        $throttleKey = Str::lower($request->input('email')) . '|' . $request->ip();
+                                              //haker@test.com|192.168.1.1 => Cache
+        // check how many user try to log for exemple 5 times pre defnier par laravel 
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->withErrors([
+                'email' => "Trop de tentatives. Veuillez réessayer dans $seconds secondes.",
+            ]);
+        }
+
         // Validation
         $credentials = $request->validate([
             'email'    => 'required|email',
             'password' => 'required',
         ]);
 
-        // Attempt: Laravel hash pass and compare with database pass
+        // Rate enter
         if (Auth::attempt($credentials)) {
-            // Session
+            RateLimiter::clear($throttleKey); // remove ratelimiter when seccess enter
             $request->session()->regenerate();
-
-            return redirect()->intended('/dashboard'); // to Dashboard
+            return redirect()->intended('/dashboard');
         }
 
-        // Error inputs
+        // Counter increment 
+        RateLimiter::hit($throttleKey);
+
         return back()->withErrors([
-            'email' => 'email ne pas correct!',
+            'email' => 'Email ou mot de passe incorrect.',
         ])->onlyInput('email');
     }
 

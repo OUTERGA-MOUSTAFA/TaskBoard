@@ -81,35 +81,35 @@
             @csrf
             <div class="relative">
               @error('Nom')
-                <p class="text-pink-500 text-xs mt-1 border-2 border-pink-600">{{ $message }}</p>
+                <p class="text-pink-500 text-xs mt-1">{{ $message }}</p>
               @enderror
                 <input type="text" name="Nom" placeholder="Nom" class="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300">
                 <i class="fas fa-user absolute right-3 top-3 text-pink-500"></i>
             </div>
             <div class="relative">
               @error('Prenom')
-                  <p class="text-pink-500 text-xs mt-1 border-2 border-pink-600">{{ $message }}</p>
+                  <p class="text-pink-500 text-xs mt-1">{{ $message }}</p>
               @enderror
                 <input type="text" name="Prenom" placeholder="Prénom" class="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300">
                 <i class="fas fa-user absolute right-3 top-3 text-pink-500"></i>
             </div>
             <div class="relative">
               @error('Email')
-                  <p class="text-pink-500 text-xs mt-1 border-2 border-pink-600">{{ $message }}</p>
+                  <p class="text-pink-500 text-xs mt-1">{{ $message }}</p>
               @enderror
                 <input type="email" name="Email" placeholder="Email" class="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300">
                 <i class="fas fa-envelope absolute right-3 top-3 text-pink-500"></i>
             </div>
             <div class="relative">
               @error('Password')
-                <p class="text-pink-500 text-xs mt-1 border-2 border-pink-600">{{ $message }}</p>
+                <p class="text-pink-500 text-xs mt-1">{{ $message }}</p>
               @enderror
                 <input type="password" name="Password" placeholder="Password" class="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300">
                 <i class="fas fa-lock absolute right-3 top-3 text-pink-500"></i>
             </div>
             <div class="relative">
               @error('Password_confirmation')
-                  <p class="text-pink-500 text-xs mt-1 border-2 border-pink-600">{{ $message }}</p>
+                  <p class="text-pink-500 text-xs mt-1">{{ $message }}</p>
               @enderror
                 <input type="password" name="Password_confirmation" placeholder=" repaite password" class="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300">
                 <i class="fas fa-lock absolute right-3 top-3 text-pink-500"></i>
