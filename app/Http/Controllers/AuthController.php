@@ -40,7 +40,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // 1. تحديد "مفتاح" لكل مستخدم (غالباً الإيميل مع الـ IP)
+        
         $throttleKey = Str::lower($request->input('email')) . '|' . $request->ip();
                                               //haker@test.com|192.168.1.1 => Cache
         // check how many user try to log for exemple 5 times pre defnier par laravel 
@@ -61,7 +61,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             RateLimiter::clear($throttleKey); // remove ratelimiter when seccess enter
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/dashboard')->with('welcome','Bienvenue');
         }
 
         // Counter increment 

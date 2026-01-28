@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-use App\Http\Controllers\{AuthController,TaskController};
+use App\Http\Controllers\{AuthController, createController, TaskController};
 Route::get('/', function () {
     return view('index');
 })->name('')->middleware('guest');
@@ -31,3 +31,5 @@ Route::get('/dashboard',[TaskController::class, 'index'])->name('dashboard')->mi
 Route::post('/save', [AuthController::class, 'register']);
 Route::post('/log', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+Route::post('/tasks', [createController::class, 'store'])->name('tasks.store')->middleware('auth');
+

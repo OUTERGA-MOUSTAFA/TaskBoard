@@ -17,9 +17,10 @@ return new class extends Migration
             $table->text('description');
             $table->dateTime('deadline');
             $table->string('priorite');
-            $table->string('statut')->default('à faire'); // statut by default
+            $table->string('statut')->default('To do'); // statut by default
             $table->timestamps();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()
+                                        ->onDelete('cascade');
         });
     }
 
