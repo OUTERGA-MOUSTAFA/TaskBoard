@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
@@ -26,8 +26,6 @@
             <button @click="showModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <i class="fas fa-times text-xl"></i>
             </button>
-
-            <h2 class="text-2xl font-bold text-purple-700 mb-6">Create New Task</h2>
 
             @include('tasks.createTask')
 
@@ -121,6 +119,7 @@
                                 <th class="p-4">deadline</th>
                                 <th class="p-4">priorite</th>
                                 <th class="p-4">statut</th>
+                                <th class="p-4">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -137,7 +136,39 @@
                                     </span>
                                 </td>
                                 <td class="p-4 italic text-gray-500">{{ $task->statut }}</td>
+                                <td class="p-4 grid grid-cols-3 grid-rows-3 h-24 w-24 border-t relative">
+                                    <a href="{{route('tasks.edit', $task->id)}}" class="text-blue-600 hover:text-blue-800 transition col-start-1 row-start-1 justify-self-start">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    @if( $task->deleted_at !== NULL)
+                                    <form action="{{ route('tasks.archive', $task->id, 'archive') }}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="text-green-700 hover:text-green-500 transition col-start-2 row-start-2 justify-self-center self-center">
+                                            <i class="fas fa-archive"></i>
+                                        </button>
+                                    </form>
+                                    @else
+                                    <form action="{{ route('tasks.desarchive', $task->id , 'desarchive') }}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="text-gray-600 hover:text-orange-700 transition col-start-2 row-start-2 justify-self-center self-center">
+                                            <i class="fas fa-archive"></i>
+                                        </button>
+                                    </form>
+                                    @endif
+
+                                    <form action="{{route('tasks.delete' , $task->id)}}" method="POST" onsubmit='return confirm("tu es sure !")'
+                                        class="col-start-3 row-start-3 justify-self-end self-end">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-800 transition">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
+
                             @endforeach
 
                         </tbody>
