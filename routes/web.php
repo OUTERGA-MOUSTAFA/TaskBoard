@@ -34,6 +34,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::post('/tasks', [createController::class, 'store'])->name('tasks.store')->middleware('auth');
 Route::get('/tasks.edit/{id}', [EditController::class, 'index'])->name('tasks.edit')->middleware('auth');
 Route::put('/tasks/{id}', [EditController::class, 'updateTask'])->name('tasks.update')->middleware('auth');
-Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.delete')->middleware('auth');
+Route::patch('/tasks/{id}/desarchive', [TaskController::class, 'restore'])->name('tasks.desarchive')->middleware('auth');
 Route::delete('/tasks/{id}/archive', [TaskController::class, 'archiveTask'])->name('tasks.archive')->middleware('auth');
-Route::delete('/tasks/{id}/desarchive', [TaskController::class, 'restore'])->name('tasks.desarchive')->middleware('auth');
+Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.delete')->middleware('auth');
+
+Route::patch('/tasks/{id}/update-statut', [TaskController::class, 'updateStatut'])->middleware('auth');

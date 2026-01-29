@@ -135,7 +135,30 @@
                                         {{ strtoupper($task->priorite) }}
                                     </span>
                                 </td>
-                                <td class="p-4 italic text-gray-500">{{ $task->statut }}</td>
+
+                                <td class="p-4 italic text-gray-500">
+                                    <div x-data="{ statut: '{{ $task->statut }}' }"
+                                        class="relative rotate-[-2deg] hover:rotate-0 flex w-full items-center group bg-white rounded-lg px-2 py-1 shadow-[1px_1px_4px_rgba(0,0,0,0.1)] shadow-blue-200 transition-all hover:shadow-blue-400">
+                                        <select
+                                            x-model="statut"
+                                            @change="
+                                                fetch(`/tasks/{{ $task->id }}/update-statut`, {
+                                                    method: 'PATCH',
+                                                    headers: { 
+                                                        'Content-Type': 'application/json', 
+                                                        'X-CSRF-TOKEN': '{{ csrf_token() }}' 
+                                                    },
+                                                    body: JSON.stringify({ statut: statut })
+                                                });
+                                            "
+                                            class="bg-transparent border-none focus:ring-0 focus:border-none p-0 m-0 cursor-pointer appearance-none hover:text-blue-600 transition italic text-gray-500 ">
+                                            <option value="to do" :selected="statut == 'to do'">To Do</option>
+                                            <option value="in progress" :selected="statut == 'in progress'">In Progress</option>
+                                            <option value="done" :selected="statut == 'done'">Done</option>
+                                        </select>
+                                        <i class="fas fa-chevron-down absolute right-2 text-xs text-blue-400 group-hover:text-blue-600 transition-colors pointer-events-none"></i>
+                                    </div>
+                                </td>
                                 <td class="p-4 grid grid-cols-3 grid-rows-3 h-24 w-24 border-t relative">
                                     <a href="{{route('tasks.edit', $task->id)}}" class="text-blue-600 hover:text-blue-800 transition col-start-1 row-start-1 justify-self-start">
                                         <i class="fas fa-edit"></i>
@@ -151,7 +174,7 @@
                                     @else
                                     <form action="{{ route('tasks.desarchive', $task->id , 'desarchive') }}" method="post" class="col-start-2 row-start-2 justify-self-center self-center">
                                         @csrf
-                                        @method('DELETE')
+                                        @method('PATCH')
                                         <button class="text-gray-600 hover:text-orange-700 transition col-start-2 row-start-2 justify-self-center self-center">
                                             <i class="fas fa-undo"></i>
                                         </button>
