@@ -140,8 +140,8 @@
                                     <a href="{{route('tasks.edit', $task->id)}}" class="text-blue-600 hover:text-blue-800 transition col-start-1 row-start-1 justify-self-start">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    @if( $task->deleted_at !== NULL)
-                                    <form action="{{ route('tasks.archive', $task->id, 'archive') }}" method="post">
+                                    @if( $task->deleted_at === null)
+                                    <form action="{{ route('tasks.archive', $task->id, 'archive') }}" method="post" class="col-start-2 row-start-2 justify-self-center self-center">
                                         @csrf
                                         @method('DELETE')
                                         <button class="text-green-700 hover:text-green-500 transition col-start-2 row-start-2 justify-self-center self-center">
@@ -149,11 +149,11 @@
                                         </button>
                                     </form>
                                     @else
-                                    <form action="{{ route('tasks.desarchive', $task->id , 'desarchive') }}" method="post">
+                                    <form action="{{ route('tasks.desarchive', $task->id , 'desarchive') }}" method="post" class="col-start-2 row-start-2 justify-self-center self-center">
                                         @csrf
                                         @method('DELETE')
                                         <button class="text-gray-600 hover:text-orange-700 transition col-start-2 row-start-2 justify-self-center self-center">
-                                            <i class="fas fa-archive"></i>
+                                            <i class="fas fa-undo"></i>
                                         </button>
                                     </form>
                                     @endif
@@ -173,7 +173,7 @@
 
                         </tbody>
                     </table>
-                    <div class="mt-4 p-4 center">
+                    <div class="mt-4 p-4 flex justify-center">
                         {{ $tasks->links() }}
                     </div>
                 </div>

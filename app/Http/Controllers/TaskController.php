@@ -19,7 +19,8 @@ class TaskController extends Controller
         //  auth(): Authenticated User
         //  user(): objet from User model
         //  tasks(): fonction dans le model User.php  hasMany that make to get alltasks user_id
-        $tasks = auth()->user()->tasks()->paginate(10);
+        $tasks = auth()->user()->tasks()->withTrashed()->paginate(10);
+        
         return view('dashboard', compact('tasks'));
     }
 
@@ -34,9 +35,12 @@ class TaskController extends Controller
     public function archiveTask($id)
     {
         // get only trashed tasks (archived tasks)
-        $task = Task::onlyTrashed()->get($id);
+        
+        $task = Task::findOrFail($id);
+        
         $task->delete();
-        return redirect()->route('dashboard')->with('success', 'La tâche a été archivée !');
+        
+        return redirect()->route('dashboard')->with('success', 'le task est bien archiver!');
 
     }
 
