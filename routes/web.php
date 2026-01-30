@@ -32,6 +32,9 @@ Route::post('/save', [AuthController::class, 'register']);
 Route::post('/log', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 Route::post('/tasks', [createController::class, 'store'])->name('tasks.store')->middleware('auth');
+
+Route::get('/tasks/search', [TaskController::class, 'search'])->middleware('auth');
+
 Route::get('/tasks.edit/{id}', [EditController::class, 'index'])->name('tasks.edit')->middleware('auth');
 Route::put('/tasks/{id}', [EditController::class, 'updateTask'])->name('tasks.update')->middleware('auth');
 Route::patch('/tasks/{id}/desarchive', [TaskController::class, 'restore'])->name('tasks.desarchive')->middleware('auth');

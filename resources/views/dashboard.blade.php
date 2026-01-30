@@ -38,7 +38,7 @@
             @php
             $firstLetter = strtoupper(substr(auth()->user()->prenom, 0, 1));
             $secondLetter = strtoupper(substr(auth()->user()->nom, 0, 1));
-            
+
             $initials = $firstLetter . $secondLetter;
             @endphp
 
@@ -63,7 +63,7 @@
             <header class="bg-white shadow-md p-4 flex justify-between items-center">
                 <h1 class="text-xl font-bold text-purple-700">Dashboard</h1>
                 <div class="flex items-center gap-4">
-                    <input id="search_By_Mostafa" type="text" placeholder="Search..." class="px-4 py-2 border rounded-lg">
+
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="flex items-center bg-red-200 p-2 rounded-md text-gray-700 hover:text-red-600 transition">
@@ -106,7 +106,9 @@
                     </div>
                     <div class="bg-green py-2 px-6 hover:bg-blue-300 transition-all rounded-lg shadow-md">
                         <p class="text-sm text-gray-500">Retard</p>
-                        <h2 class="text-3xl font-bold text-red-600 mt-2">{{ $taskStatut->filter(fn($task) => $task->deadline >= now())->count() }}</h2>
+                        <h2 class="text-3xl font-bold text-red-600 mt-2">
+                            {{ $taskStatut->filter(fn($task) => $task->deadline < now() && $task->statut !== 'done')->count() }}
+                        </h2>
                     </div>
                     <div class="bg-green py-2 px-6 hover:bg-blue-300 transition-all rounded-lg shadow-md">
                         <p class="text-sm text-gray-500">Total</p>
@@ -116,7 +118,25 @@
                 </div>
 
                 <div class="bg-white rounded-lg">
-                    <div class="p-4 border-b font-bold text-purple-700">Tasks List</div>
+                    <div class="bg-white p-6 rounded-lg grid grid-cols-2 item-center justify-around gap-4">
+                        <div class="p-4 font-bold text-purple-700 border-b">Tasks List</div>
+                        <div class="flex items-center justify-end gap-3 border-b">
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input id="search_By_Mostafa" type="text" placeholder="Search tasks..."
+                                    class="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all w-full sm:w-64">
+                            </div>
+
+                            <button @click="showModal = true"
+                                class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-purple-200 transition-all active:scale-95 whitespace-nowrap">
+                                <i class="fas fa-plus"></i>
+                                <span class="hidden sm:inline">Add Task</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <table class="w-full text-left">
                         <thead class="bg-purple-50">
                             <tr>
@@ -128,13 +148,13 @@
                                 <th class="p-4">Action</th>
                             </tr>
                         </thead>
-                        <tbody >
+                        <tbody id="result_Mostafa">
 
                             @foreach ($tasks as $task)
 
-                            <tr  id="result_Mostafa" class="border-t transition-all shadow-md
+                            <tr class="border-t transition-all shadow-md
                                 
-                                {{ $task->statut == 'in progress' ? 'bg-red-300' : ($task->statut == 'done' ? 'bg-green-200' : '') }}
+                                {{ $task->statut == 'in progress' ? 'bg-red-100' : ($task->statut == 'done' ? 'bg-green-100' : '') }}
                                 
                                 {{ $task->deleted_at !== null ? 'bg-amber-100/40 grayscale-[50%] text-gray-400 opacity-75' : 'text-gray-700' }}">
                                 <td class="p-4 font-semibold text-gray-700" dir="auto">{{ $task->titre }}</td>
@@ -212,9 +232,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-lg shadow-md grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <button @click="showModal = true" class="bg-purple-600 text-white py-3 rounded-lg shadow hover:bg-purple-700">Add Task</button>
-                </div>
+
         </div>
         </main>
     </div>
@@ -227,15 +245,53 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
-        document.getElementById('search_By_Mostafa').addEventListener('input', ()=>{
-            fetch(`/tasks/{{ $task->id }}/update-statut`, {
-                method: 'PATCH',
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}' 
-                },
-                body: JSON.stringify({ statut: statut })
-            });
+        document.getElementById('search_By_Mostafa').addEventListener('input', (e) => {
+            let text = e.target.value
+            fetch(`/tasks/search?query=${encodeURIComponent(text)}`, {
+                    method: 'get',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }).then(response => response.json())
+                .then(result => {
+                    let table = document.getElementById('result_Mostafa');
+                    table.innerHTML = '';
+
+                    if (result.length === 0) {
+                        table.innerHTML = '<tr><td colspan="4" class="p-4 text-center">Aucun résultat trouvé</td></tr>';
+                        return;
+                    }
+
+                    result.forEach(task => {
+                        // 1. تحديد كلاسات الألوان على حساب الأولوية باستعمال JavaScript
+                        let priorityClass = '';
+                        if (task.priorite === 'high') {
+                            priorityClass = 'bg-red-100 text-red-600';
+                        } else if (task.priorite === 'medium') {
+                            priorityClass = 'bg-yellow-100 text-yellow-600';
+                        } else {
+                            priorityClass = 'bg-green-100 text-green-600';
+                        }
+
+                        // 2. رسم السطر
+                        table.innerHTML += `
+                            <tr class="border-t hover:bg-gray-50 transition">
+                                <td class="p-4 font-semibold">${task.titre || '-'}</td>
+                                <td class="p-4 text-sm text-gray-600">${task.description || '-'}</td>
+                                <td class="p-4 text-purple-600 font-medium">${task.deadline}</td>
+                                <td class="p-4">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold ${priorityClass}">
+                                        ${task.priorite.toUpperCase()}
+                                    </span>
+                                </td>
+                                <td class="p-4 italic text-gray-500">${task.statut}</td>
+                            </tr>
+                        `;
+                    });
+                })
+                .catch(error => console.error('Error fetching tasks:', error))
+
+
         })
     </script>
 </body>

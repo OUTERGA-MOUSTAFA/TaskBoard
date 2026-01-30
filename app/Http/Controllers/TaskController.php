@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Symfony\Component\Routing\Route;
 
 class TaskController extends Controller
 {
@@ -59,5 +60,21 @@ class TaskController extends Controller
         $task->save();
 
         return response()->json(['message' => 'Status updated!']);
+    }
+
+    function search(Request $request)
+    {
+        //dd($request);
+        $text = $request->query('query');
+
+        $result = auth()->user()->tasks()
+            ->withTrashed()
+            ->where(function ($query) use ($text) {
+                $query->where('titre', 'LIKE', "%$text%")
+                    ->orWhere('description', 'LIKE', "%$text%");
+            })
+            ->get();
+        //dd($result);
+        return response()->json($result);
     }
 }
