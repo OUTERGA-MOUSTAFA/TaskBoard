@@ -36,26 +36,24 @@
         <!-- Sidebar -->
         <aside class="w-64 bg-white shadow-md">
             @php
-            $words = explode(' ', auth()->user()->name);
-
-            $initials = strtoupper(substr($words[0], 0, 1));
-            if (count($words) > 1) {
-            $initials .= strtoupper(substr($words[1], 0, 1));
-            }
+            $firstLetter = strtoupper(substr(auth()->user()->prenom, 0, 1));
+            $secondLetter = strtoupper(substr(auth()->user()->nom, 0, 1));
+            
+            $initials = $firstLetter . $secondLetter;
             @endphp
 
-            <div class="bg-purple-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl">
-                {{ $initials }}
-            </div>Panel
+            <div class=" flex items-center justify-center font-bold text-xl text-purple-600">
+                <div class="flex items-center justify-center  rounded-full w-12 h-12">{{ $initials }}</div>Panel
+            </div>
 
             <header class="mt-8 flex center justify-center">
 
                 <img src="https://i.pravatar.cc/100" alt="Profile" class="w-20 h-20 rounded-full shadow">
             </header>
             <nav class="mt-8">
-                <a href="#" class="block py-3 px-6 text-gray-700 hover:bg-purple-100">ToDo</a>
-                <a href="#" class="block py-3 px-6 text-gray-700 hover:bg-purple-100">In progress</a>
-                <a href="#" class="block py-3 px-6 text-gray-700 hover:bg-purple-100">Done</a>
+                <a href="#" class="block py-3 px-8 text-gray-700 hover:bg-purple-100">ToDo</a>
+                <a href="#" class="block py-3 px-8 text-gray-700 hover:bg-purple-100">In progress</a>
+                <a href="#" class="block py-3 px-8 text-gray-700 hover:bg-purple-100">Done</a>
             </nav>
         </aside>
 
@@ -65,7 +63,7 @@
             <header class="bg-white shadow-md p-4 flex justify-between items-center">
                 <h1 class="text-xl font-bold text-purple-700">Dashboard</h1>
                 <div class="flex items-center gap-4">
-                    <input type="text" placeholder="Search..." class="px-4 py-2 border rounded-lg">
+                    <input id="search_By_Mostafa" type="text" placeholder="Search..." class="px-4 py-2 border rounded-lg">
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="flex items-center bg-red-200 p-2 rounded-md text-gray-700 hover:text-red-600 transition">
@@ -92,24 +90,24 @@
             </header>
 
             <!-- Content -->
-            <main class="p-6 space-y-6">
+            <main class="p-3 space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="bg-green py-2 px-6 hover:bg-blue-300 transition-all rounded-lg shadow-md">
                         <p class="text-sm text-gray-500">todo</p>
-                        <h2 class="text-3xl font-bold text-purple-700 mt-2">12</h2>
+                        <h2 class="text-3xl font-bold text-purple-700 mt-2">{{ $taskStatut->where('statut', 'to do')->count()}}</h2>
                     </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="bg-green py-2 px-6 hover:bg-blue-300 transition-all rounded-lg shadow-md">
                         <p class="text-sm text-gray-500">in progress</p>
-                        <h2 class="text-3xl font-bold text-green-600 mt-2">2</h2>
+                        <h2 class="text-3xl font-bold text-green-600 mt-2">{{ $taskStatut->where('statut', 'in progress')->count()}}</h2>
                     </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="bg-green py-2 px-6 hover:bg-blue-300 transition-all rounded-lg shadow-md">
                         <p class="text-sm text-gray-500">done</p>
-                        <h2 class="text-3xl font-bold text-blue-600 mt-2">10</h2>
+                        <h2 class="text-3xl font-bold text-blue-600 mt-2">{{ $taskStatut->where('statut', 'done')->count()}}</h2>
                     </div>
 
                 </div>
 
-                <div class="bg-white rounded-lg shadow-md">
+                <div class="bg-white rounded-lg">
                     <div class="p-4 border-b font-bold text-purple-700">Tasks List</div>
                     <table class="w-full text-left">
                         <thead class="bg-purple-50">
@@ -122,14 +120,19 @@
                                 <th class="p-4">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody >
 
                             @foreach ($tasks as $task)
-                            <tr class="border-t">
-                                <td class="p-4 font-semibold text-gray-700">{{ $task->titre }}</td>
-                                <td class="p-4 text-gray-600">{{ $task->description }}</td>
+
+                            <tr  id="result_Mostafa" class="border-t transition-all shadow-md
+                                
+                                {{ $task->statut == 'in progress' ? 'bg-red-300' : ($task->statut == 'done' ? 'bg-green-200' : '') }}
+                                
+                                {{ $task->deleted_at !== null ? 'bg-amber-100/40 grayscale-[50%] text-gray-400 opacity-75' : 'text-gray-700' }}">
+                                <td class="p-4 font-semibold text-gray-700" dir="auto">{{ $task->titre }}</td>
+                                <td class="p-4 text-gray-600" dir="auto">{{ $task->description }}</td>
                                 <td class="p-4 text-sm text-purple-600">{{ $task->deadline }}</td>
-                                <td class="p-4">
+                                <td class="p-4" dir="auto">
                                     <span class="px-3 py-1 rounded-full text-xs font-bold 
                                             {{ $task->priorite == 'high' ? 'bg-red-100 text-red-600' : ($task->priorite == 'medium' ? 'bg-yellow-100 text-yellow-600' : 'bg-green-100 text-green-600') }}">
                                         {{ strtoupper($task->priorite) }}
@@ -139,7 +142,7 @@
                                 <td class="p-4 italic text-gray-500">
                                     <div x-data="{ statut: '{{ $task->statut }}' }"
                                         class="relative rotate-[-2deg] hover:rotate-0 flex w-full items-center group bg-white rounded-lg px-2 py-1 shadow-[1px_1px_4px_rgba(0,0,0,0.1)] shadow-blue-200 transition-all hover:shadow-blue-400">
-                                        <select
+                                        <select class='w-full'
                                             x-model="statut"
                                             @change="
                                                 fetch(`/tasks/{{ $task->id }}/update-statut`, {
@@ -215,6 +218,18 @@
         © 2025 AdminPanel. All rights reserved.
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        document.getElementById('search_By_Mostafa').addEventListener('input', ()=>{
+            fetch(`/tasks/{{ $task->id }}/update-statut`, {
+                method: 'PATCH',
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' 
+                },
+                body: JSON.stringify({ statut: statut })
+            });
+        })
+    </script>
 </body>
 
 </html>

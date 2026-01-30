@@ -19,8 +19,8 @@ class TaskController extends Controller
         //  user(): objet from User model
         //  tasks(): fonction dans le model User.php  hasMany that make to get alltasks user_id
         $tasks = auth()->user()->tasks()->withTrashed()->paginate(4);
-
-        return view('dashboard', compact('tasks'));
+        $taskStatut = auth()->user()->tasks()->get();
+        return view('dashboard', compact('tasks', 'taskStatut'));
     }
 
     public function destroy($id)
