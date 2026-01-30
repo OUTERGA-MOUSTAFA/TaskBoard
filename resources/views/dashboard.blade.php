@@ -91,18 +91,26 @@
 
             <!-- Content -->
             <main class="p-3 space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
                     <div class="bg-green py-2 px-6 hover:bg-blue-300 transition-all rounded-lg shadow-md">
-                        <p class="text-sm text-gray-500">todo</p>
+                        <p class="text-sm text-gray-500">To do</p>
                         <h2 class="text-3xl font-bold text-purple-700 mt-2">{{ $taskStatut->where('statut', 'to do')->count()}}</h2>
                     </div>
                     <div class="bg-green py-2 px-6 hover:bg-blue-300 transition-all rounded-lg shadow-md">
-                        <p class="text-sm text-gray-500">in progress</p>
-                        <h2 class="text-3xl font-bold text-green-600 mt-2">{{ $taskStatut->where('statut', 'in progress')->count()}}</h2>
+                        <p class="text-sm text-gray-500">In progress</p>
+                        <h2 class="text-3xl font-bold text-orange-600 mt-2">{{ $taskStatut->where('statut', 'in progress')->count()}}</h2>
                     </div>
                     <div class="bg-green py-2 px-6 hover:bg-blue-300 transition-all rounded-lg shadow-md">
-                        <p class="text-sm text-gray-500">done</p>
-                        <h2 class="text-3xl font-bold text-blue-600 mt-2">{{ $taskStatut->where('statut', 'done')->count()}}</h2>
+                        <p class="text-sm text-gray-500">Done</p>
+                        <h2 class="text-3xl font-bold text-green-600 mt-2">{{ $taskStatut->where('statut', 'done')->count()}}</h2>
+                    </div>
+                    <div class="bg-green py-2 px-6 hover:bg-blue-300 transition-all rounded-lg shadow-md">
+                        <p class="text-sm text-gray-500">Retard</p>
+                        <h2 class="text-3xl font-bold text-red-600 mt-2">{{ $taskStatut->filter(fn($task) => $task->deadline >= now())->count() }}</h2>
+                    </div>
+                    <div class="bg-green py-2 px-6 hover:bg-blue-300 transition-all rounded-lg shadow-md">
+                        <p class="text-sm text-gray-500">Total</p>
+                        <h2 class="text-3xl font-bold text-blue-600 mt-2">{{ $taskStatut->count('statut')}}</h2>
                     </div>
 
                 </div>
