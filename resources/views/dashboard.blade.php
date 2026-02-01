@@ -11,6 +11,24 @@
         [x-cloak] {
             display: none !important;
         }
+
+        .modern-pagination nav p.text-sm.text-gray-700 {
+            display: none !important;
+        }
+
+        .modern-pagination nav div:first-child {
+            display: none !important;
+        }
+
+        .modern-pagination nav div:last-child {
+            display: flex !important;
+            justify-content: center;
+            width: 100%;
+        }
+
+        #result_Mostafa tr {
+            will-change: transform, opacity;
+        }
     </style>
 </head>
 
@@ -91,11 +109,12 @@
 
             <!-- Content -->
             <main class="p-3 space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
-                    <div class="bg-green py-2 px-6 hover:bg-blue-300 transition-all rounded-lg shadow-md">
-                        <p class="text-sm text-gray-500">To do</p>
-                        <h2 class="text-3xl font-bold text-purple-700 mt-2">{{ $taskStatut->where('statut', 'to do')->count()}}</h2>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-purple-500 hover:shadow-md transition-all">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">To do</p>
+                        <h2 class="text-2xl font-black text-gray-800 mt-1">{{ $taskStatut->where('statut', 'to do')->count() }}</h2>
                     </div>
+
                     <div class="bg-green py-2 px-6 hover:bg-blue-300 transition-all rounded-lg shadow-md">
                         <p class="text-sm text-gray-500">In progress</p>
                         <h2 class="text-3xl font-bold text-orange-600 mt-2">{{ $taskStatut->where('statut', 'in progress')->count()}}</h2>
@@ -227,19 +246,27 @@
 
                         </tbody>
                     </table>
-                    <div class="mt-4 p-4 flex justify-center">
-                        {{ $tasks->links() }}
+                    <div class="mt-6 flex flex-col items-center gap-4">
+
+                        <div class="modern-pagination">
+                            {{ $tasks->links('pagination::tailwind') }}
+                        </div>
+
+                        <div class="text-xs text-gray-400 font-medium">
+                            <span class="text-purple-600 font-bold">{{ $tasks->firstItem() }}</span>
+                            to
+                            <span class="text-purple-600 font-bold">{{ $tasks->lastItem() }}</span>
+                            <span class="mx-1">of</span>
+                            <span class="text-gray-600">{{ $tasks->total() }}</span>
+                        </div>
                     </div>
+
                 </div>
 
 
         </div>
         </main>
     </div>
-
-    <!-- model -->
-
-
     <footer class="bg-white p-4 mt-10 text-center text-sm text-gray-400 border-t">
         © 2025 AdminPanel. All rights reserved.
     </footer>
@@ -258,41 +285,45 @@
                     table.innerHTML = '';
 
                     if (result.length === 0) {
-                        table.innerHTML = '<tr><td colspan="4" class="p-4 text-center">Aucun résultat trouvé</td></tr>';
+                        table.innerHTML = '<tr><td colspan="5" class="p-4 text-center">Aucun résultat trouvé</td></tr>';
                         return;
                     }
 
-                    result.forEach(task => {
-                        // 1. تحديد كلاسات الألوان على حساب الأولوية باستعمال JavaScript
-                        let priorityClass = '';
-                        if (task.priorite === 'high') {
-                            priorityClass = 'bg-red-100 text-red-600';
-                        } else if (task.priorite === 'medium') {
-                            priorityClass = 'bg-yellow-100 text-yellow-600';
-                        } else {
-                            priorityClass = 'bg-green-100 text-green-600';
-                        }
+                    result.forEach((task, index) => {
 
-                        // 2. رسم السطر
-                        table.innerHTML += `
-                            <tr class="border-t hover:bg-gray-50 transition">
-                                <td class="p-4 font-semibold">${task.titre || '-'}</td>
-                                <td class="p-4 text-sm text-gray-600">${task.description || '-'}</td>
-                                <td class="p-4 text-purple-600 font-medium">${task.deadline}</td>
-                                <td class="p-4">
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold ${priorityClass}">
-                                        ${task.priorite.toUpperCase()}
-                                    </span>
-                                </td>
-                                <td class="p-4 italic text-gray-500">${task.statut}</td>
-                            </tr>
+                        let priorityClass = task.priorite === 'high' ? 'bg-red-100 text-red-600' :
+                            task.priorite === 'medium' ? 'bg-yellow-100 text-yellow-600' :
+                            'bg-green-100 text-green-600';
+
+                        let row = document.createElement('tr');
+                        row.className = "border-t hover:bg-gray-50 transition opacity-0 transform translate-y-4"; // بادي شفاف ونازل شوية
+                        row.style.transition = "all 0.5s ease"; // speed annimation
+
+                        row.innerHTML = `
+                            <td class="p-4 font-semibold">${task.titre || '-'}</td>
+                            <td class="p-4 text-sm text-gray-600">${task.description || '-'}</td>
+                            <td class="p-4 text-purple-600 font-medium">${task.deadline}</td>
+                            <td class="p-4">
+                                <span class="px-3 py-1 rounded-full text-xs font-bold ${priorityClass}">
+                                    ${task.priorite.toUpperCase()}
+                                </span>
+                            </td>
+                            <td class="p-4 italic text-gray-500">${task.statut}</td>
                         `;
+
+                        table.appendChild(row);
+
+                        setTimeout(() => {
+                            row.classList.remove('opacity-0', 'translate-y-4');
+                            row.classList.add('opacity-100', 'translate-y-0');
+                        }, index * 300); // one by one animation
                     });
                 })
                 .catch(error => console.error('Error fetching tasks:', error))
 
 
         })
+    </script>
     </script>
 </body>
 
